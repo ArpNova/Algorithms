@@ -26,22 +26,23 @@ Output :
     A valid arrangement of N queens, if one exists.
 
 1. Create an N × N chessboard.
-2. Initialize all positions on the chessboard as EMPTY.
+2. Initialize all positions as EMPTY.
 3. Start placing queens from the first column.
 4. For each column:
-      a) Try placing a queen in every row of that column.
-      b) Check whether the position is safe.
+      a) Try placing a queen in every row.
+      b) Check whether the current position is safe
+         (same row, upper-left diagonal and lower-left diagonal).
       c) If the position is safe:
             i) Place the queen.
-           ii) Move to the next column.
-      d) If a solution is found, continue until all queens are placed.
-      e) If no safe position exists in the next column:
-            i) Remove the previously placed queen.
-           ii) Try the next possible row in the current column.
-5. Repeat the process until all columns have been processed.
-6. If all N queens are placed successfully,
-      return the chessboard configuration.
-7. Otherwise, report that no solution exists.
+           ii) Recursively place a queen in the next column.
+      d) If all queens are placed successfully:
+            i) Return the solution.
+      e) If placing the remaining queens is not possible:
+            i) Remove the current queen (Backtrack).
+           ii) Try the next row.
+5. If no row is suitable in the current column,
+      return to the previous column.
+6. Return the valid chessboard configuration or report that no solution exists.
 ```
 
 ---
