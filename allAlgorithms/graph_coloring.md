@@ -1,50 +1,81 @@
-# Graph Coloring Algorithm (Greedy Method)
+# Graph Coloring Problem (Greedy Graph Coloring)
 
 ## Definition
 
-**Graph Coloring** is the process of assigning colors to the vertices of a graph such that **no two adjacent vertices have the same color**. The objective is to use the **minimum number of colors**. The Greedy Graph Coloring Algorithm assigns the first available color to each vertex one by one.
+The **Graph Coloring Problem** is the problem of assigning colors to the vertices of a graph such that **no two adjacent vertices have the same color**. The **Greedy Graph Coloring Algorithm** is a **Greedy** technique that assigns the smallest available color to each vertex one by one. It aims to produce a valid coloring using a reasonable number of colors, though it does **not always produce the minimum possible number of colors**.
 
 ---
 
 ## Algorithm
 
+**Algorithm: Greedy Graph Coloring**
+
+**Input :**
+- A graph \( G = (V, E) \) represented using an adjacency list or adjacency matrix.
+
+**Output :**
+- `color[]` containing the color assigned to each vertex.
+
 ```text
-Algorithm: Graph Coloring (Greedy Method)
+1. Create an array color[] of size |V|.
+2. Initialize color[i] = -1 for every vertex i.
 
-Input :
-    Graph G(V, E)
+3. Assign the first color (Color 0) to the first vertex.
+      color[0] = 0
 
-Output :
-    color[] containing the assigned color for each vertex.
+4. Create an array available[] of size |V|.
 
-1. Create an array color[] of size V.
-2. Initialize color[i] = -1 for all vertices.
-3. Assign the first color (Color 1) to the first vertex.
-4. For each remaining vertex u:
-      a) Mark all colors as available.
-      b) For every adjacent vertex v of u:
-            if color[v] is assigned,
-               mark color[v] as unavailable.
-      c) Assign the first available color to vertex u.
-5. Return color[].
+5. For each remaining vertex u = 1 to |V| − 1:
+
+      a. Initialize all colors as available.
+            available[i] = true for all i
+
+      b. For every adjacent vertex v of u:
+            If color[v] ≠ -1
+                  available[color[v]] = false
+
+      c. Find the first available color c
+            such that available[c] = true.
+
+      d. Assign
+            color[u] = c
+
+6. Return color[].
 ```
 
 ---
 
 ## Explanation
 
-**Step 1:** Create an array `color[]` to store the color assigned to each vertex.
+### Step 1:
+Create the `color[]` array to store the color assigned to every vertex. Initially, no vertex has a color, so all entries are set to **-1**.
 
-**Step 2:** Initialize all vertices with **-1**, indicating that no color has been assigned.
+### Step 2:
+Assign the first color (**Color 0**) to the first vertex since no neighboring vertices have been colored yet.
 
-**Step 3:** Assign the first color to the first vertex.
+### Step 3:
+Create the `available[]` array. This array keeps track of which colors can be assigned to the current vertex.
 
-**Step 4:** Process every remaining vertex one by one.
-- Check all adjacent vertices.
-- Mark the colors already used by adjacent vertices as unavailable.
-- Assign the first available color that is not used by any adjacent vertex.
+### Step 4:
+Process each remaining vertex one by one.
 
-**Step 5:** After all vertices are colored, return the `color[]` array.
+### Step 5:
+Before coloring a vertex, mark every color as available.
+
+### Step 6:
+Visit every adjacent vertex. If an adjacent vertex already has a color, mark that color as unavailable.
+
+### Step 7:
+Choose the first available color that is not used by any adjacent vertex.
+
+### Step 8:
+Assign the selected color to the current vertex.
+
+### Step 9:
+Repeat the process until every vertex is colored.
+
+### Step 10:
+Return the `color[]` array containing the color assigned to every vertex.
 
 ---
 
@@ -52,76 +83,82 @@ Output :
 
 ### Step-wise Analysis
 
-1. Initializing the color array takes **O(V)** time.
-2. Each vertex is processed once.
-3. For every vertex, all adjacent vertices are checked.
+1. Initializing `color[]`
+   - Takes **O(V)** time.
 
-Using an **Adjacency Matrix**:
+2. Initializing `available[]`
+   - Done for every vertex.
+   - Costs **O(V)** per vertex.
+   - Total = **O(V²)**.
 
-- For each of the **V** vertices, checking adjacent vertices takes **O(V)**.
+3. Checking all adjacent vertices
+   - Across the entire graph, every edge is examined once (or twice in an undirected graph).
+   - Total = **O(E)**.
 
-Therefore,
-
-**Time Complexity = O(V × V) = O(V²)**
-
----
-
-### Using Adjacency List
-
-- Every vertex is visited once.
-- Every edge is examined once while checking adjacent vertices.
+4. Finding the first available color
+   - In the worst case, checks at most **V** colors for each vertex.
+   - Total = **O(V²)**.
 
 Therefore,
 
-**Time Complexity = O(V + E)**
+**Overall Time Complexity = O(V² + E)**
 
-where,
-- **V** = Number of vertices
-- **E** = Number of edges
+For a dense graph where \(E = O(V^2)\), the complexity becomes:
 
----
+**Overall Time Complexity = O(V²)**
 
 ### Best Case
 
-- **O(V²)** (Adjacency Matrix)
-- **O(V + E)** (Adjacency List)
-
----
+- Every new vertex can use the first available color.
+- Time Complexity = **O(V² + E)**
 
 ### Average Case
 
-- **O(V²)** (Adjacency Matrix)
-- **O(V + E)** (Adjacency List)
-
----
+- Similar to the worst case because each vertex still checks available colors and adjacent vertices.
+- Time Complexity = **O(V² + E)**
 
 ### Worst Case
 
-- **O(V²)** (Adjacency Matrix)
-- **O(V + E)** (Adjacency List)
+- Every vertex requires checking many colors.
+- Time Complexity = **O(V² + E)**
 
 ---
 
 ## Space Complexity (Detailed)
 
-Extra memory used:
+### Auxiliary Arrays
 
-- Color array `color[]` → **O(V)**
-- Availability array `available[]` → **O(V)**
+- `color[]` → **O(V)**
+- `available[]` → **O(V)**
 
-Therefore,
+### Auxiliary Data Structures
 
-**Auxiliary Space Complexity = O(V)**
+- No additional auxiliary data structures are used.
 
-> **Note:** The graph representation (Adjacency Matrix/List) is considered input and is **not** included in the auxiliary space complexity.
+### Auxiliary Space Complexity
+
+**Auxiliary Space = O(V)**
+
+**Note:** The graph (adjacency list or adjacency matrix) is part of the input and is **not included** in the auxiliary space complexity.
 
 ---
 
 ## Key Points
 
 - It is a **Greedy Algorithm**.
-- Adjacent vertices must **not have the same color**.
-- The algorithm assigns the **first available color** to each vertex.
-- It **does not always produce the minimum possible number of colors**.
-- The minimum number of colors required to color a graph is called the **Chromatic Number**.
-- Used in **timetabling, register allocation in compilers, map coloring, frequency assignment, and scheduling problems**.
+- Adjacent vertices must have different colors.
+- Colors are assigned one vertex at a time.
+- Always selects the **smallest available color**.
+- Does **not** always produce the minimum number of colors (chromatic number).
+- Works with both adjacency lists and adjacency matrices.
+- Simple to implement and efficient for practical use.
+- Common applications include timetable scheduling, register allocation in compilers, map coloring, and frequency assignment.
+
+---
+
+## Exam Tip
+
+- **Common Viva Question:** Does the Greedy Graph Coloring algorithm always produce the minimum number of colors?
+  - **Answer:** No. It produces a **valid coloring**, but not necessarily the **optimal (minimum) coloring**.
+
+- **Common Mistake:** Do **not** confuse **Greedy Graph Coloring** with the **m-Coloring Problem**. The Greedy algorithm colors vertices one by one without backtracking, whereas the m-Coloring Problem uses **Backtracking** to determine whether the graph can be colored using at most **m** colors.
