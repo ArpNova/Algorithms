@@ -1,47 +1,47 @@
-# 0–1 Knapsack Problem
+# Fractional Knapsack Problem
 
 ## Definition
 
-The **0–1 Knapsack Problem** is a **Dynamic Programming** problem in which each item can either be **completely included (1)** or **completely excluded (0)** from the knapsack. The objective is to maximize the total profit without exceeding the given knapsack capacity. Unlike the Fractional Knapsack Problem, items **cannot be divided**.
+The **Fractional Knapsack Problem** is a **Greedy** optimization problem in which items can be **divided into fractions**. The objective is to maximize the total profit without exceeding the knapsack capacity by selecting items in the order of their **profit-to-weight ratio**.
 
 ---
 
 ## Algorithm
 
-**Algorithm: 0/1 Knapsack (Dynamic Programming)**
+**Algorithm: Fractional Knapsack**
 
 **Input :**
 - `n` → Number of items
 - `W` → Capacity of the knapsack
-- `wt[]` → Array of item weights
-- `val[]` → Array of item values
+- Weight and profit of each item
 
 **Output :**
-- Maximum profit that can be obtained.
+- Maximum profit
 
 ```text
-Algorithm: 0/1 Knapsack (Dynamic Programming)
+Algorithm: Fractional Knapsack
 
 Input :
     n → Number of items
     W → Capacity of the knapsack
-    wt[] → Array of item weights
-    val[] → Array of item values
+    Weight and profit of each item
 
 Output :
-    Maximum profit that can be obtained
+    Maximum profit
 
-1. Create a table K[0...n][0...W].
-2. Initialize the first row and first column to 0.
-3. For each item i = 1 to n, do
-      a) For each capacity w = 1 to W, do
-            i. If wt[i] ≤ w, then
-                  K[i][w] = max(val[i] + K[i-1][w-wt[i]],
-                                K[i-1][w])
-           ii. Otherwise,
-                  K[i][w] = K[i-1][w]
-4. The value stored in K[n][W] is the maximum profit.
-5. Return K[n][W].
+1. Calculate the profit-to-weight ratio (Profit/Weight) for each item.
+2. Sort all items in descending order of their profit-to-weight ratio.
+3. Initialize TotalProfit = 0.
+4. For each item in the sorted order, do
+      a) If the item's weight is less than or equal to the remaining capacity,
+            i) Take the whole item.
+            ii) Add its profit to TotalProfit.
+            iii) Reduce the remaining capacity.
+      b) Otherwise,
+            i) Take only the required fraction of the item.
+            ii) Add the corresponding fractional profit to TotalProfit.
+            iii) Stop, as the knapsack is full.
+5. Return TotalProfit.
 ```
 
 ---
@@ -49,32 +49,31 @@ Output :
 ## Explanation
 
 ### Step 1:
-Create a Dynamic Programming table `K[][]` of size **(n + 1) × (W + 1)**. Each row represents the number of items considered, and each column represents the knapsack capacity.
+Calculate the **profit-to-weight ratio (Profit/Weight)** for every item. This ratio indicates the profit obtained per unit weight.
 
 ### Step 2:
-Initialize the first row and the first column with **0**.
-- If there are no items, the maximum profit is **0**.
-- If the knapsack capacity is **0**, no item can be selected.
+Sort all items in **descending order** of their profit-to-weight ratio so that the most profitable items are considered first.
 
 ### Step 3:
-Process each item one by one.
+Initialize the total profit as **0**.
 
 ### Step 4:
-For every possible knapsack capacity:
-- If the current item can fit into the knapsack (`wt[i] ≤ w`), calculate:
-  - Profit obtained by **including** the item.
-  - Profit obtained by **excluding** the item.
-  - Store the larger of the two profits in the table.
-- Otherwise, copy the profit from the previous row.
+Consider each item one by one in the sorted order.
 
 ### Step 5:
-Continue filling the table until all items and capacities have been processed.
+If the entire item can fit into the remaining knapsack capacity:
+- Take the whole item.
+- Add its profit to **TotalProfit**.
+- Reduce the remaining knapsack capacity.
 
 ### Step 6:
-The value stored in `K[n][W]` represents the maximum profit that can be obtained.
+If the item cannot fit completely:
+- Take only the required fraction of the item.
+- Add the corresponding fractional profit to **TotalProfit**.
+- Stop, since the knapsack becomes full.
 
 ### Step 7:
-Return `K[n][W]`.
+Return the maximum profit obtained.
 
 ---
 
@@ -82,35 +81,38 @@ Return `K[n][W]`.
 
 ### Step-wise Analysis
 
-1. **Table Initialization**
-   - Initializing the first row and first column requires **O(n + W)** time.
+1. **Calculating Profit-to-Weight Ratio**
+   - Ratio is calculated for each of the **n** items.
+   - Time required = **O(n)**.
 
-2. **Filling the Dynamic Programming Table**
-   - There are **n** rows (items).
-   - There are **W** columns (capacities).
-   - Each table entry is computed only once in constant time.
+2. **Sorting the Items**
+   - Sorting based on the profit-to-weight ratio requires **O(n log n)** time.
+
+3. **Selecting Items**
+   - Each item is considered at most once.
+   - Time required = **O(n)**.
 
 Therefore,
 
-**Overall Time Complexity = O(nW)**
+**Overall Time Complexity = O(n log n)**
 
 ### Best Case
 
-- Every table entry must still be computed.
+- Sorting is still required before selecting items.
 
-**Best Case Time Complexity = O(nW)**
+**Best Case Time Complexity = O(n log n)**
 
 ### Average Case
 
-- All entries of the DP table are evaluated.
+- Sorting dominates the execution time.
 
-**Average Case Time Complexity = O(nW)**
+**Average Case Time Complexity = O(n log n)**
 
 ### Worst Case
 
-- Every table entry is processed exactly once.
+- All items are examined after sorting.
 
-**Worst Case Time Complexity = O(nW)**
+**Worst Case Time Complexity = O(n log n)**
 
 ---
 
@@ -118,7 +120,7 @@ Therefore,
 
 ### Auxiliary Arrays
 
-- Dynamic Programming table `K[][]` → **O(nW)**
+- Array to store the profit-to-weight ratio (if maintained separately) → **O(n)**
 
 ### Auxiliary Data Structures
 
@@ -126,28 +128,28 @@ Therefore,
 
 ### Auxiliary Space Complexity
 
-**Auxiliary Space = O(nW)**
+**Auxiliary Space = O(n)**
 
-**Note:** The input arrays `wt[]` and `val[]` are part of the input and are **not included** in the auxiliary space complexity.
+**Note:** The input arrays containing the weights and profits of the items are part of the input and are **not included** in the auxiliary space complexity.
 
 ---
 
 ## Key Points
 
-- Uses the **Dynamic Programming** technique.
-- Each item can be selected **only once** (0 or 1 time).
-- Items **cannot be divided**.
-- Produces the **optimal solution**.
-- Uses a **Dynamic Programming table (`K[][]`)** to store intermediate results.
-- Time complexity is **O(nW)**.
-- Space complexity is **O(nW)**.
-- Different from the **Fractional Knapsack Problem**, which uses a Greedy approach.
+- Uses the **Greedy** technique.
+- Items are selected based on the **highest profit-to-weight ratio**.
+- Items **can be divided into fractions**.
+- Produces the **optimal solution** for the Fractional Knapsack Problem.
+- Sorting is an essential step.
+- Time complexity is **O(n log n)**.
+- Space complexity is **O(n)**.
+- Different from the **0–1 Knapsack Problem**, where items cannot be divided.
 
 ---
 
 ## Exam Tip
 
-- **Common Viva Question:** Why is Dynamic Programming used for the 0–1 Knapsack Problem?
-  - **Answer:** Because the problem has **optimal substructure** and **overlapping subproblems**, making Dynamic Programming the most efficient standard approach.
+- **Common Viva Question:** Why does the Greedy approach work for the Fractional Knapsack Problem?
+  - **Answer:** Since items can be divided, selecting items in decreasing order of their **profit-to-weight ratio** always gives the maximum possible profit.
 
-- **Common Mistake:** Do **not** write the Greedy algorithm for the 0–1 Knapsack Problem. The standard solution uses **Dynamic Programming**, whereas the Greedy approach is applicable only to the **Fractional Knapsack Problem**.
+- **Common Mistake:** Do **not** confuse the **Fractional Knapsack Problem** with the **0–1 Knapsack Problem**. Fractional Knapsack allows taking **fractions of items** and uses a **Greedy** approach, whereas the 0–1 Knapsack Problem allows only complete inclusion or exclusion of items and uses **Dynamic Programming**.
